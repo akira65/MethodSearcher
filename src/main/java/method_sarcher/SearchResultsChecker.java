@@ -72,7 +72,7 @@ public class SearchResultsChecker {
             //     outVariables.forEach(v -> System.out.println("    OUT = " + v.getNameForPrint()));
             // }
             try {
-                File file = new File("../methods.txt");
+                File file = new File("../" + jproject.getName() + "_methods.txt");
                 FileWriter filewriter = new FileWriter(file);
                 for (CalleeMethod method : targets) {
                     filewriter.write("[\ncallingMethod: " + method.getCallingMethod().getQualifiedName().fqn() + "\n");
@@ -119,6 +119,6 @@ public class SearchResultsChecker {
     
     public static void main(String[] args) {
         SearchResultsChecker checker = new SearchResultsChecker();
-        checker.run("jsoup-master", "/Users/hara_ko/Desktop/gitHubProjects/spark-master");
+        checker.run(args[0], args[1]);
     }
 }
