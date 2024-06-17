@@ -1,6 +1,7 @@
-/Users/hara_ko/Desktop/testGenerater/MethodSearcher/src/main/java/method_sarcher/ProjectVariable.java
-/Users/hara_ko/Desktop/testGenerater/MethodSearcher/src/main/java/method_sarcher/SearchResultsChecker.java
-/Users/hara_ko/Desktop/testGenerater/MethodSearcher/src/main/java/method_sarcher/VariableFinder.java
-/Users/hara_ko/Desktop/testGenerater/MethodSearcher/src/main/java/method_sarcher/MethodSeq.java
-/Users/hara_ko/Desktop/testGenerater/MethodSearcher/src/main/java/method_sarcher/CalleeMethod.java
-/Users/hara_ko/Desktop/testGenerater/MethodSearcher/src/main/java/method_sarcher/MethodFinder.java
+/Users/hara_ko/Desktop/testGenerater/MethodSearcher/src/main/java/method_searcher/CalleeMethod.java
+/Users/hara_ko/Desktop/testGenerater/MethodSearcher/src/main/java/method_searcher/FailedMethods.java
+/Users/hara_ko/Desktop/testGenerater/MethodSearcher/src/main/java/method_searcher/MethodFinder.java
+/Users/hara_ko/Desktop/testGenerater/MethodSearcher/src/main/java/method_searcher/MethodSeq.java
+/Users/hara_ko/Desktop/testGenerater/MethodSearcher/src/main/java/method_searcher/ProjectVariable.java
+/Users/hara_ko/Desktop/testGenerater/MethodSearcher/src/main/java/method_searcher/SearchResultsChecker.java
+/Users/hara_ko/Desktop/testGenerater/MethodSearcher/src/main/java/method_searcher/VariableFinder.java
