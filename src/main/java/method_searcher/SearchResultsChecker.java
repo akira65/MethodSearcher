@@ -35,6 +35,7 @@ public class SearchResultsChecker {
         "byte",
         "java.lang.Short",
         "short",
+        "java.lang.Number",
         "java.lang.Integer",
         "integer",
         "int",
@@ -44,7 +45,9 @@ public class SearchResultsChecker {
         "float",
         "java.lang.Double",
         "double",
+        "java.lang.Boolean",
         "boolean",
+
      };
     
     private void run(String name, String target) {
@@ -67,36 +70,42 @@ public class SearchResultsChecker {
             List<MethodSeq> targetMethodSeqList = methodFinder.getTargetMethodSeqList();
             
             List<CalleeMethod> targets = new ArrayList<>();
-            int num = 1;
+            FailedMethods failedMethods = new FailedMethods(); 
+
             for (MethodSeq seq : targetMethodSeqList) {
-            
                 CalleeMethod calleeMethod = new CalleeMethod(seq);
-                
-                boolean result = check(jproject, calleeMethod);
+                boolean result = check(jproject, calleeMethod, failedMethods);
                 if (result) {
                     targets.add(calleeMethod);
                 }
-                num++;
             }
             
             System.out.println();
             System.out.println("# Found Method Call Sequences = " + allMethods.size());
-            System.out.println("# Valid Target Methods = " + targets.size());
+            System.out.println("# Found Method Pair Of Caller And Callee = " + targetMethodSeqList.size());
+            System.out.println("# Valid Method Pairs Of Caller And Callee = " + targets.size());
             System.out.println();
 
-            Path p = Paths.get(target, "../../" + jproject.getName() + "_methods.txt");
+            Path outputFile = Paths.get(target, "../../" + jproject.getName() + "_methods.txt");
         
             try {
                 // ファイルを作成（存在しない場合のみ）
-                if (!Files.exists(p)) {
-                    Files.createFile(p);
+                if (!Files.exists(outputFile)) {
+                    Files.createFile(outputFile);
                 }
 
                 // File オブジェクトを Path オブジェクトから取得
-                File file = p.toFile();
+                File file = outputFile.toFile();
                 FileWriter filewriter = new FileWriter(file);
 
-                filewriter.write("# Valid Callee Methods = " + targets.size());
+
+                filewriter.write("# Not found target class = " + failedMethods.getNotFoundClasses().size() + "\n");
+                filewriter.write("# Not found target method = " + failedMethods.getNotFoundMethods().size() + "\n");
+                filewriter.write("# Not found input variable = " + failedMethods.getNotFoundInputVariables().size() + "\n");
+                filewriter.write("# Not found output variable = " + failedMethods.getNotFoundOutputVariables().size() + "\n");
+                filewriter.write("# Input variable is not Object = " + failedMethods.getIsNotObjectInput().size() + "\n");
+                filewriter.write("# Output variable is not Primitive = " + failedMethods.getIsNotPrimitiveOutput().size() + "\n\n");
+                filewriter.write("# Valid Callee Methods = " + targets.size() + "\n");
                 // ファイルにメソッド情報を書き込む
                 for (CalleeMethod method : targets) {
                     filewriter.write("[\ncallerMethod: " + method.getCallerMethod().getQualifiedName().fqn() + "\n");
@@ -112,38 +121,44 @@ public class SearchResultsChecker {
         builder.unbuild();
     }
     
-    private boolean check(JavaProject jproject, CalleeMethod testTarget) {
+    private boolean check(JavaProject jproject, CalleeMethod testTarget, FailedMethods failedMethods) {
         String targetClassName = testTarget.getTargetMethod().getDeclaringClass().getQualifiedName().fqn();
         JavaClass targetClass = jproject.getClass(targetClassName);
         if (targetClass == null) {
             System.err.println("**** Not found target class: " + targetClassName);
+            failedMethods.addNotFoundClasse(targetClassName);
             return false;
         }
         
         String targetMethodSig = testTarget.getTargetMethod().getSignature();
         JavaMethod targetMethod = targetClass.getMethod(targetMethodSig);
         if (targetMethod == null) {
-            System.err.println("**** Not found target method: " + targetMethodSig + " in " + targetClassName);
+            // System.err.println("**** Not found target method: " + targetMethodSig + " in " + targetClassName);
+            failedMethods.addNotFoundMethod(targetMethodSig);
             return false;
         }
         
         if (testTarget.getInVariables().isEmpty()) {
-            System.err.println("**** Not found input variable: " + targetMethodSig + " in " + targetClassName);
+            // System.err.println("**** Not found input variable: " + targetMethodSig + " in " + targetClassName);
+            failedMethods.addNotFoundInputVariable(targetClassName);
             return false;
         }
         
         if (testTarget.getOutVariables().isEmpty()) {
-            System.err.println("**** Not found output variable: " + targetMethodSig + " in " + targetClassName);
+            // System.err.println("**** Not found output variable: " + targetMethodSig + " in " + targetClassName);
+            failedMethods.addNotFoundOutputVariable(targetClassName);
             return false;
         }
 
         if (!isObjectInput(testTarget)) {
-            System.err.println("**** Input variable is not Object: " + targetMethodSig + " in " + targetClassName);
+            // System.err.println("**** Input variable is not Object: " + targetMethodSig + " in " + targetClassName);
+            failedMethods.addIsNotObjectInput(targetMethodSig);
             return false;
         }
 
         if (!isPrimitiveOutput(testTarget)) {
-            System.err.println("**** Output variable is not Primitive: " + targetMethodSig + " in " + targetClassName);
+            // System.err.println("**** Output variable is not Primitive: " + targetMethodSig + " in " + targetClassName);
+            failedMethods.addIsNotPrimitiveOutput(targetMethodSig);
             return false;
         }
 
@@ -180,14 +195,15 @@ public class SearchResultsChecker {
     }
     
     private boolean isPrimitiveOutput(CalleeMethod testTarget) {
-        Pattern pattern = Pattern.compile("\\(\\s*(.*?)\\s*\\)");
+        Pattern pattern = Pattern.compile("@(\\S+)");
 
-        for (ProjectVariable var : testTarget.getInVariables()) {
+        for (ProjectVariable var : testTarget.getOutVariables()) {
             Matcher matcher = pattern.matcher(var.toString());
             if (matcher.find()){
-                String argumentTypes = matcher.group(1);
+                String argumentType = matcher.group(1);
+                System.out.println(argumentType);
                 for (String primitiveType : primitiveTypes) {
-                    if (argumentTypes.contains(primitiveType)) {
+                    if (argumentType.contains(primitiveType)) {
                         return true;
                     }
                 }

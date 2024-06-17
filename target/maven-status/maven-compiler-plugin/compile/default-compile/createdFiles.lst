@@ -1,6 +1,7 @@
 method_searcher/SearchResultsChecker.class
 method_searcher/MethodFinder.class
 method_searcher/ProjectVariable$Sort.class
+method_searcher/FailedMethods.class
 method_searcher/CalleeMethod.class
 method_searcher/ProjectVariable$1.class
 method_searcher/MethodSeq.class
