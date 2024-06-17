@@ -5,28 +5,25 @@
 
 package method_searcher;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.jtool.cfg.CFG;
+import org.jtool.cfg.CFGNode;
+import org.jtool.cfg.CFGParameter;
+import org.jtool.cfg.CFGStatement;
+import org.jtool.cfg.JFieldReference;
+import org.jtool.cfg.JVariableReference;
 import org.jtool.srcmodel.JavaClass;
 import org.jtool.srcmodel.JavaField;
 import org.jtool.srcmodel.JavaMethod;
 import org.jtool.srcmodel.JavaProject;
 import org.jtool.srcmodel.QualifiedName;
-import org.checkerframework.checker.units.qual.radians;
-import org.jtool.cfg.CFG;
-import org.jtool.cfg.CFGNode;
-import org.jtool.cfg.CFGStatement;
-import org.jtool.cfg.CFGParameter;
-import org.jtool.cfg.JVariableReference;
-import org.jtool.cfg.JFieldReference;
 
 import method_searcher.ProjectVariable.Direction;
 import method_searcher.ProjectVariable.Sort;
-
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
 
 public class VariableFinder {
     

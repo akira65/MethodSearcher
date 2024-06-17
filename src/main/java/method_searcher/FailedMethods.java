@@ -21,7 +21,6 @@ public class FailedMethods {
         this.isNotPrimitiveOutput = new ArrayList<>();
     }
 
-    // Getter and Setter methods for each list
     public List<String> getNotFoundClasses() {
         return notFoundClasses;
     }
