@@ -5,11 +5,9 @@
 
  package method_searcher;
 
- import org.jtool.srcmodel.JavaMethod;
- 
  import java.util.List;
- import java.util.stream.Collectors;
- import java.util.Comparator;
+
+ import org.jtool.srcmodel.JavaMethod;
  
  class MethodSeq {
      private List<JavaMethod> methodChain;
@@ -44,10 +42,6 @@
      
      public String getMethodSig() {
          return callee().getSignature();
-     }
-     
-     public static void sort(List<MethodSeq> methods) {
-         methods = methods.stream().sorted(Comparator.comparing(m -> m.getName())).collect(Collectors.toList());
      }
  }
  

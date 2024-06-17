@@ -15,8 +15,6 @@ import org.eclipse.jdt.core.dom.Name;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.regex.*;
 
 public class MethodFinder {
@@ -45,9 +43,6 @@ public class MethodFinder {
         for (JavaMethod jmethod : methodList) {
             collectCallingMethodSeqList(jmethod, new ArrayList<JavaMethod>(), callChainNum);
         }
-        
-        
-        // List<MethodSeq> seqList = getListOfUniqueMethodSeq(methodSeqList);
 
         for (MethodSeq seq : methodSeqList) {
             int loc1 = MethodFinder.getLoc(seq.caller());
@@ -171,16 +166,5 @@ public class MethodFinder {
             return loc;
         }
         return 0;
-    }
-
-    private List<MethodSeq> getListOfUniqueMethodSeq(List<MethodSeq> seqList) {
-        Map<String, MethodSeq> methods = new HashMap<String, MethodSeq>();
-        for (MethodSeq seq: seqList) {
-            methods.put(seq.getName(), seq);
-        }
-        
-        List<MethodSeq> ret = new ArrayList<MethodSeq>(methods.values());
-        MethodSeq.sort(ret);
-        return ret;
     }
 }

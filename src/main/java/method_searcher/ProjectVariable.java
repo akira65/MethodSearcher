@@ -16,8 +16,6 @@
  import org.jtool.cfg.JVariableReference;
  import org.eclipse.jdt.core.dom.Modifier;
  import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.HashSet;
  import java.util.List;
  import java.util.ArrayList;
