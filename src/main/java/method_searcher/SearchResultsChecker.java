@@ -97,15 +97,26 @@ public class SearchResultsChecker {
                 // File オブジェクトを Path オブジェクトから取得
                 File file = outputFile.toFile();
                 FileWriter filewriter = new FileWriter(file);
-
-
+                
+                List<String> targetMethods = new ArrayList<String>();
+                for (CalleeMethod method : targets) {
+                    if (!targetMethods.contains(method.getTargetMethod().getQualifiedName().fqn())) {
+                        targetMethods.add(method.getTargetMethod().getQualifiedName().fqn());
+                    }
+                }
+                
+                filewriter.write("# Number Of Methods = " + allMethods.size() + "\n");
+                filewriter.write("# Number Of Classes = " + methodFinder.getClassNum(jproject) + "\n");
+                filewriter.write("# Line Of Code = " + methodFinder.getAllMethodLoc() + "\n");
+                filewriter.write("# Target Methods = " + targetMethods.size() + "\n");
+                filewriter.write("# All Method Pairs = " + targetMethodSeqList.size() + "\n");
+                filewriter.write("# Valid Method Pairs = " + targets.size() + "\n");
                 filewriter.write("# Not found target class = " + failedMethods.getNotFoundClasses().size() + "\n");
                 filewriter.write("# Not found target method = " + failedMethods.getNotFoundMethods().size() + "\n");
                 filewriter.write("# Not found input variable = " + failedMethods.getNotFoundInputVariables().size() + "\n");
                 filewriter.write("# Not found output variable = " + failedMethods.getNotFoundOutputVariables().size() + "\n");
                 filewriter.write("# Input variable is not Object = " + failedMethods.getIsNotObjectInput().size() + "\n");
                 filewriter.write("# Output variable is not Primitive = " + failedMethods.getIsNotPrimitiveOutput().size() + "\n\n");
-                filewriter.write("# Valid Callee Methods = " + targets.size() + "\n");
                 // ファイルにメソッド情報を書き込む
                 for (CalleeMethod method : targets) {
                     filewriter.write("[\ncallerMethod: " + method.getCallerMethod().getQualifiedName().fqn() + "\n");
@@ -201,7 +212,6 @@ public class SearchResultsChecker {
             Matcher matcher = pattern.matcher(var.toString());
             if (matcher.find()){
                 String argumentType = matcher.group(1);
-                System.out.println(argumentType);
                 for (String primitiveType : primitiveTypes) {
                     if (argumentType.contains(primitiveType)) {
                         return true;
