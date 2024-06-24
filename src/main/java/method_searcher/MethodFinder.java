@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.regex.*;
 
+import javassist.compiler.Javac;
+import javassist.util.proxy.MethodFilter;
+
 public class MethodFinder {
 
     private static final boolean nonPublicFlag = true;
@@ -24,6 +27,8 @@ public class MethodFinder {
     private List<JavaMethod> allMethods = new ArrayList<JavaMethod>();
     private List<MethodSeq> methodSeqList = new ArrayList<MethodSeq>();
     private List<MethodSeq> targetMethodSeqList = new ArrayList<MethodSeq>();
+    private List<JavaClass> allClasses = new ArrayList<JavaClass>();
+    private int allMethodLoc = 0;
 
     int i = 0;
     public void run(JavaProject jproject, int loc, int callChainNum) {
@@ -50,6 +55,23 @@ public class MethodFinder {
                 targetMethodSeqList.add(seq);
             }
         }
+    }
+
+    public int getAllMethodLoc() {
+        for (JavaMethod jm : allMethods) {
+            int loc = MethodFinder.getLoc(jm);
+            allMethodLoc = allMethodLoc + loc;
+        }
+        return allMethodLoc;
+    }
+
+    public int getClassNum(JavaProject jproject) {
+        for (JavaMethod jm : allMethods) {
+            if (!allClasses.contains(jm.getDeclaringClass())) {
+                allClasses.add(jm.getDeclaringClass());
+            }
+        }
+        return allClasses.size();
     }
 
     public List<JavaMethod> getAllMethods() {
